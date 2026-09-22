@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>血統検索ツール BloodSearch</title>
+<meta name="description" content="JRA-VAN Data Lab. のデータから、指定した血を持つ馬が今日どのレースにいるかを一覧にする Windows 用のフリーソフトです。">
+<style>
+  :root{
+    --bg:#f6f5f1; --panel:#fffefb; --ink:#23211d; --muted:#6a655c;
+    --line:#ddd8cd; --accent:#7a5c2e; --accent-soft:#efe7d7;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1b1a17; --panel:#232220; --ink:#ece8e0; --muted:#a8a296;
+      --line:#3a3833; --accent:#d2ab6a; --accent-soft:#332c20;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1b1a17; --panel:#232220; --ink:#ece8e0; --muted:#a8a296;
+    --line:#3a3833; --accent:#d2ab6a; --accent-soft:#332c20;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+    line-height:1.85; font-size:16px;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:0 16px 72px}
+  header{padding-block:48px 28px; border-bottom:1px solid var(--line)}
+  h1{font-size:1.9rem; margin:0 0 6px; letter-spacing:.02em; text-wrap:balance}
+  .sub{color:var(--muted); margin:0}
+  h2{font-size:1.15rem; margin:40px 0 10px; padding-left:10px; border-left:4px solid var(--accent)}
+  h3{font-size:1rem; margin:22px 0 6px}
+  p,li{margin:8px 0}
+  ul{padding-left:1.2em}
+  .lead{font-size:1.05rem}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin:18px 0}
+  .dl{display:inline-block; background:var(--accent); color:#fff; text-decoration:none;
+      padding:12px 22px; border-radius:8px; font-weight:700}
+  :root[data-theme="dark"] .dl, :root:not([data-theme="light"]) .dl{color:#1b1a17}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dl{color:#1b1a17}}
+  .dl-note{color:var(--muted); font-size:.9rem; margin-top:8px}
+  table{border-collapse:collapse; width:100%; margin:12px 0; font-size:.95rem}
+  th,td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top}
+  th{background:var(--accent-soft); white-space:nowrap}
+  code{background:var(--accent-soft); padding:1px 5px; border-radius:4px; font-size:.92em}
+  .note{color:var(--muted); font-size:.92rem}
+  footer{margin-top:52px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:.92rem}
+  .tablewrap{overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>血統検索ツール BloodSearch</h1>
+  <p class="sub">JRA-VAN Data Lab. のデータから、<strong>その血を持つ馬が今日どのレースにいるか</strong>を一覧にします。Windows 用・無料。</p>
+</header>
+
+<p class="lead">「先週この血がよく走っていた」と気づいたとき、その血を持つ馬を出馬表から手で拾うのは骨が折れます。それを一覧にするための道具です。</p>
+<p><strong>予想はしません。点も付けません。探すだけです。</strong></p>
+
+<div class="card">
+  <a class="dl" href="BloodSearch_v1.0.0.exe">BloodSearch v1.0.0 をダウンロード</a>
+  <p class="dl-note">自己解凍形式の exe（約600KB）。実行すると展開先を聞かれます。</p>
+</div>
+
+<h2>できること</h2>
+<ul>
+  <li><strong>血の名前で、その日の出走馬を横断検索</strong>。種牡馬名・祖先名を打つと候補が出ます。</li>
+  <li><strong>血が入る位置を指定</strong>：父／母父／父系（直系）／母父系／父方／母方／どこでも／クロス／父母父／母母父。</li>
+  <li><strong>何代前まで遡るか</strong>：5代／9代。グレイソヴリンのような古い祖先は9代で探します。</li>
+  <li><strong>条件を重ねる</strong>：行ごとに「満たす」「除く」を選べます。たとえばトニービンで探すとハーツクライ産駒で埋まりますが（ハーツクライの母父がトニービン）、「除く／ハーツクライ／父」を足すと<strong>別の経路でトニービンを持つ馬</strong>だけが残ります。</li>
+  <li><strong>クロス検索</strong>：同じ血が複数のマスに入っている馬。本数や「父方と母方の両方」も指定できます。</li>
+  <li><strong>表記ゆれを吸収</strong>：全角と半角、大文字と小文字、ひらがなとカタカナ、スペースの有無。<code>ＤＡＮＺＩＧ</code> でも <code>danzig</code> でも引けます。</li>
+  <li>結果からレース番号を押すと出馬表へ、馬名を押すと血統表（5代／9代）へ移動します。</li>
+  <li>「◯レースに◯頭（◯レース ◯頭中）」と母数が出るので、その血が今日どれくらい厚いかが読めます。</li>
+  <li>終わったレースでは着順・人気も表示します。</li>
+</ul>
+
+<h2>動作環境</h2>
+<div class="tablewrap">
+<table>
+  <tr><th>OS</th><td>Windows 10 / 11（64bit）</td></tr>
+  <tr><th>ランタイム</th><td>.NET Framework 4.8 以上。<strong>Windows に最初から入っています。</strong>自分で入れるものはありません</td></tr>
+  <tr><th>空き容量</th><td>1.5GB 以上（取得したデータと読み込み結果の置き場）</td></tr>
+  <tr><th>必要なもの</th><td>JRA-VAN Data Lab. の利用契約と、JV-Link（32bit）のインストール・利用キー登録</td></tr>
+  <tr><th>画面</th><td>1280×800 以上を推奨（血統表が既定 1280×820 で開きます）</td></tr>
+</table>
+</div>
+<p class="note">JV-Link は 32bit の COM のため、このツールも 32bit で動きます。</p>
+
+<h2>使いはじめ</h2>
+<ol>
+  <li>ダウンロードした exe を実行し、展開先を選びます。</li>
+  <li><code>BloodSearch.exe</code> を起動します。初回は「WindowsによってPCが保護されました」と出ます。署名を付けていないためで、<strong>「詳細情報」→「実行」</strong>で進めます。</li>
+  <li>「最新開催を取得」を押します。<strong>初回は血統データ全期間で1GB近くを取得</strong>するため、30分ほどかかることがあります。2回目以降は前後2週間ぶんだけなので短時間です。</li>
+  <li>日付・場・レースを選ぶと出馬表が出ます。「血統で探す」で検索画面が開きます。</li>
+</ol>
+<p class="note">取得したデータと読み込み結果は <code>%LOCALAPPDATA%\JraVanRaceCardViewer</code> に貯まります。2回目以降の起動は、この保存を使うので数秒で表示できます。</p>
+
+<h2>更新履歴</h2>
+<div class="tablewrap">
+<table>
+  <tr><th>v1.0.0</th><td>公開。血統検索（位置・代・クロス・複数条件）、出馬表、血統表、読み替え表の同梱</td></tr>
+</table>
+</div>
+
+<h2>注意</h2>
+<ul>
+  <li>データの取得は利用者自身の JRA-VAN Data Lab. 契約で行います。<strong>取得したデータの再配布はできません。</strong></li>
+  <li>外部のサーバーには問い合わせません。JV-Link から競馬のデータを取る以外の通信は行いません。</li>
+  <li>的中や回収を約束するものではありません。予想機能はありません。</li>
+  <li>無保証です。利用によって生じた損害の責任は負いかねます。</li>
+</ul>
+
+<footer>
+  <p>作者: maguronamake-keiba ／ 連絡先: <a href="mailto:maguronamake@gmail.com">maguronamake@gmail.com</a></p>
+  <p>JRA-VAN、Data Lab. は株式会社ジェイ・アール・エー・システムサービスの商標です。</p>
+</footer>
+
+</div>
+</body>
+</html>
