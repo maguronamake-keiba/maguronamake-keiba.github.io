@@ -6,19 +6,29 @@
 <title>血統検索ツール BloodSearch</title>
 <meta name="description" content="JRA-VAN Data Lab. のデータから、指定した血を持つ馬が今日どのレースにいるかを一覧にする Windows 用のフリーソフトです。">
 <style>
+  /* 配色は4色（背景・文字・メイン・アクセント）。統一感重視で緑の同系色だけで組む。
+     補足文字・罫線・面の塗りは、この4色を混ぜた中間色（新しい色相は足さない）。
+     文字の組み合わせはすべて WCAG AA（4.5:1）以上。アクセントは背景との比が低いので文字や線には使わず、面の塗りだけ。 */
   :root{
-    --bg:#f6f5f1; --panel:#fffefb; --ink:#23211d; --muted:#6a655c;
-    --line:#ddd8cd; --accent:#7a5c2e; --accent-soft:#efe7d7;
+    --bg:#F4F7F5;      /* 背景: 白練（緑み） */
+    --ink:#1C2823;     /* 文字: 墨（緑み）       背景比 14.14 */
+    --main:#316745;    /* メイン: 千歳緑         背景比 6.17（リンク・見出し罫・ボタン） */
+    --accent:#68BE8D;  /* アクセント: 若竹色     面の塗りだけ */
+    --muted:#58625E;   /* 文字72%+背景           背景比 5.86 */
+    --line:#D1D6D3;    /* 文字16%+背景 */
+    --panel:#EAF3EE;   /* アクセント7%+背景 */
+    --fill:#D8ECE0;    /* アクセント20%+背景     文字との比 12.34 */
+    --main-hover:#2E5E40;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#1b1a17; --panel:#232220; --ink:#ece8e0; --muted:#a8a296;
-      --line:#3a3833; --accent:#d2ab6a; --accent-soft:#332c20;
+      --bg:#111916; --ink:#E2EAE5; --main:#8ACBA5; --accent:#68BE8D;
+      --muted:#A7AFAB; --line:#323A37; --panel:#17251E; --fill:#223A2E; --main-hover:#97D0AF;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#1b1a17; --panel:#232220; --ink:#ece8e0; --muted:#a8a296;
-    --line:#3a3833; --accent:#d2ab6a; --accent-soft:#332c20;
+    --bg:#111916; --ink:#E2EAE5; --main:#8ACBA5; --accent:#68BE8D;
+    --muted:#A7AFAB; --line:#323A37; --panel:#17251E; --fill:#223A2E; --main-hover:#97D0AF;
   }
   *{box-sizing:border-box}
   body{
@@ -30,21 +40,25 @@
   header{padding-block:48px 28px; border-bottom:1px solid var(--line)}
   h1{font-size:1.9rem; margin:0 0 6px; letter-spacing:.02em; text-wrap:balance}
   .sub{color:var(--muted); margin:0}
-  h2{font-size:1.15rem; margin:40px 0 10px; padding-left:10px; border-left:4px solid var(--accent)}
+  h2{font-size:1.15rem; margin:40px 0 10px; padding-left:10px; border-left:4px solid var(--main)}
   h3{font-size:1rem; margin:22px 0 6px}
   p,li{margin:8px 0}
   ul{padding-left:1.2em}
+  a{color:var(--main); text-underline-offset:3px}
+  a:hover{color:var(--main-hover)}
+  a:focus-visible{outline:2px solid var(--main); outline-offset:2px; border-radius:3px}
   .lead{font-size:1.05rem}
+  /* 読み飛ばされると困る文だけに引く下線マーカー（アクセントの面） */
+  .key{background:linear-gradient(transparent 60%, var(--fill) 60%)}
   .card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin:18px 0}
-  .dl{display:inline-block; background:var(--accent); color:#fff; text-decoration:none;
+  .dl{display:inline-block; background:var(--main); color:var(--bg); text-decoration:none;
       padding:12px 22px; border-radius:8px; font-weight:700}
-  :root[data-theme="dark"] .dl, :root:not([data-theme="light"]) .dl{color:#1b1a17}
-  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dl{color:#1b1a17}}
+  .dl:hover{background:var(--main-hover); color:var(--bg)}
   .dl-note{color:var(--muted); font-size:.9rem; margin-top:8px}
   table{border-collapse:collapse; width:100%; margin:12px 0; font-size:.95rem}
   th,td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top}
-  th{background:var(--accent-soft); white-space:nowrap}
-  code{background:var(--accent-soft); padding:1px 5px; border-radius:4px; font-size:.92em}
+  th{background:var(--fill); white-space:nowrap}
+  code{background:var(--fill); padding:1px 5px; border-radius:4px; font-size:.92em}
   .note{color:var(--muted); font-size:.92rem}
   footer{margin-top:52px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:.92rem}
   .tablewrap{overflow-x:auto}
@@ -59,7 +73,7 @@
 </header>
 
 <p class="lead">「先週この血がよく走っていた」と気づいたとき、その血を持つ馬を出馬表から手で拾うのは骨が折れます。それを一覧にするための道具です。</p>
-<p><strong>予想はしません。点も付けません。探すだけです。</strong></p>
+<p><strong class="key">予想はしません。点も付けません。探すだけです。</strong></p>
 
 <div class="card">
   <a class="dl" href="BloodSearch_v1.0.0.exe">BloodSearch v1.0.0 をダウンロード</a>
@@ -96,13 +110,13 @@
 <h3>1. 入れる</h3>
 <ol>
   <li>ダウンロードした exe を実行します。「WindowsによってPCが保護されました」という青い画面が出ることがあります。署名を付けていないためで、ウイルスが見つかったという意味ではありません。
-      <strong>「詳細情報」をクリックすると「実行」が出てきます。</strong>はじめは「実行しない」しか見えないので、そこで引き返さないでください。</li>
+      <strong class="key">「詳細情報」をクリックすると「実行」が出てきます。</strong>はじめは「実行しない」しか見えないので、そこで引き返さないでください。</li>
   <li>「7-Zip self-extracting archive」という英語の小さな画面が出ます。「Extract to:」の欄が展開先です。右の「…」で好きなフォルダ（ドキュメントの中など）を選び、「Extract」を押します。</li>
   <li>選んだ場所に <code>BloodSearch</code> フォルダができます。中の <code>BloodSearch.exe</code> を起動します。ここでも青い画面が出たら、同じように「詳細情報」→「実行」で進めてください。一度通せば次からは出ません。</li>
 </ol>
 
 <h3>2. データを取る（最初に一度だけ）</h3>
-<p>「最新開催を取得」を押して、終わるまで待ちます。<strong>初回は 1GB 近く落ちてきます。</strong>回線によっては数十分かかります。下のバーが動いていれば進んでいます。</p>
+<p>「最新開催を取得」を押して、終わるまで待ちます。<strong class="key">初回は 1GB 近く落ちてきます。</strong>回線によっては数十分かかります。下のバーが動いていれば進んでいます。</p>
 <p>「直近1年を取得」もありますが、初回の待ち時間はほとんど変わりません。落ちてくるデータの9割は血統で、これは日付の指定に関係なく全期間ぶん来るからです。違うのは出馬表の範囲だけなので、過去のレースを見返したくなってから押せば十分です。</p>
 <p>2回目以降は「最新開催を取得」だけで済みます。血統は取得済みなので飛ばされ、短時間で終わります。JV-Link に繋がずに見たいときは「取得済みを表示」です。</p>
 
@@ -134,7 +148,7 @@
 </div>
 <p class="note">「父方」と「父系」は別物です。父系は父→父→父の直系だけ、父方は父側にあれば父母父でも当たります。系統を指したいときは父系です。</p>
 
-<p><strong>代</strong>：何代前まで遡るかで、5 か 9 を選びます。<strong>古い祖先は 9 にしてください。</strong>グレイソヴリンやノーザンダンサーは現代の馬では5代以内にほとんど居ません。5 のままだと0件になります。</p>
+<p><strong>代</strong>：何代前まで遡るかで、5 か 9 を選びます。<strong class="key">古い祖先は 9 にしてください。</strong>グレイソヴリンやノーザンダンサーは現代の馬では5代以内にほとんど居ません。5 のままだと0件になります。</p>
 
 <p><strong>結果の見方</strong>：日付・場・R・レース名・コース・クラス・馬番・馬名・性齢・単勝・当たった位置・父・母父が並びます。</p>
 <ul>
@@ -182,7 +196,7 @@
 
 <h2>注意</h2>
 <ul>
-  <li>データの取得は利用者自身の JRA-VAN Data Lab. 契約で行います。<strong>取得したデータの再配布はできません。</strong></li>
+  <li>データの取得は利用者自身の JRA-VAN Data Lab. 契約で行います。<strong class="key">取得したデータの再配布はできません。</strong></li>
   <li>外部のサーバーには問い合わせません。JV-Link から競馬のデータを取る以外の通信は行いません。</li>
   <li>的中や回収を約束するものではありません。予想機能はありません。</li>
   <li>無保証です。利用によって生じた損害の責任は負いかねます。</li>
